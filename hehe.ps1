@@ -20,10 +20,10 @@ netsh advfirewall export "C:\Program Files\Common Files\default.wfw"
 Remove-NetFirewallRule -All
 
 # Baseline stuff, use on all machines
-# New-NetFirewallRule -DisplayName "Internal traffic" -Direction Inbound -RemoteAddress "<ADDR>" -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "Internal traffic" -Direction Inbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "HTTP(S) external outbound" -Direction Outbound -RemotePort 80,443 -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "DNS Client" -Program "C:\Windows\system32\svchost.exe" -Direction Outbound -RemotePort 53 -Protocol UDP -Action Allow
-# New-NetFirewallRule -DisplayName "Internal traffic out" -Direction Outbound -RemoteAddress "<ADDR>" -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "Internal traffic out" -Direction Outbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
 
 # Critical services, only uncomment the ones you need
 # New-NetFirewallRule -DisplayName "HTTP server" -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow
@@ -37,3 +37,9 @@ New-NetFirewallRule -DisplayName "DNS Client" -Program "C:\Windows\system32\svch
 # New-NetFirewallRule -DisplayName "SMB server" -Direction Inbound -LocalPort 445 -Protocol TCP -Action Allow
 # New-NetFirewallRule -DisplayName "SSH server" -Direction Inbound -LocalPort 22 -Protocol TCP -Action Allow
 # New-NetFirewallRule -DisplayName "SMTP server" -Direction Inbound -LocalPort 23,110,143,465,587,993,995,2525 -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "DHCP server" -Direction Inbound -LocalPort 67,68 -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "DHCP server" -Direction Inbound -LocalPort 67,68 -Protocol UDP -Action Allow
+# New-NetFirewallRule -DisplayName "POP3 scoring" -Direction Inbound -LocalPort 110 -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "POP3 scoring" -Direction Outbound -LocalPort 110 -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "POP3 scoring UDP" -Direction Inbound -LocalPort 110 -Protocol UDP -Action Allow
+# New-NetFirewallRule -DisplayName "POP3 scoring UDP" -Direction Outbound -LocalPort 110 -Protocol UDP -Action Allow
