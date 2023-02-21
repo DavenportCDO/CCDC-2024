@@ -2,17 +2,9 @@
 
 #Run this script as sudo and use the tee command to output to a text file ex) ./script.sh | tee out.txt
 
-echo "Did you check the hash of this file before running it (y,n)?"
-read confirm
-if [$confirm == "n" ]; then
-	exit 0
-fi
+read -p "Did you check the hash of this file before running it (Enter for yes, Ctrl +C for No)?"
 
-echo "Are you running as sudo (y,n)?"
-read sudoconfirm
-if [$sudoconfirm == "n" ]; then
-	exit 0
-fi
+read -p "Are you running as sudo (Enter for yes, Ctrl +C for No)?"
 
 os=$(uname -s)
 
