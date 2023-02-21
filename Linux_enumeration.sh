@@ -37,7 +37,7 @@ if [ "$os" == "Linux" ]; then
 	if command -v ufw >/dev/null 2>&1; then
 		ufw status numbered
 	else
-		iptables --L
+		iptables -L
 	fi
 	echo ======================================================================================
 	
@@ -68,7 +68,7 @@ if [ "$os" == "Linux" ]; then
 	if command -v firewall-cmd >/dev/null 2>&1; then
 		firewall-cmd --list-all
 	else
-		iptables --L
+		iptables -L
 	fi
 	echo ======================================================================================
 
@@ -98,10 +98,43 @@ if [ "$os" == "Linux" ]; then
 	if command -v ufw >/dev/null 2>&1; then
 		ufw status numbered
 	else
-		iptables --L
+		iptables -L
 	fi
 	echo ======================================================================================
+	
+  elif [ "$distro" == "centos" ]; then
+	echo ""
+	echo "This is a CentOS System."
+	echo ======================================================================================
+	centhash=$(cat /etc/passwd | cut -d: -f1 | md5sum | cut -d" " -f1)
+	echo "Hash of current users: "$centhash
+	echo ======================================================================================
+	echo "Members of Wheel group (Sudoers)"
+	getent group wheel | cut -d: -f4
+	echo ======================================================================================
+	echo "SUID Files:"
+	find / -perm /u+s
+	echo ======================================================================================
+	echo "Running Services(First column):"
+	systemctl list-unit-files | grep enabled | awk '$2 == "enabled"'
+	echo ======================================================================================
+	dnf install cronie cronie-anacron -y
+	echo "All Cron Jobs"
+	for user in $(cut -f1 -d: /etc/passwd); do echo $user; crontab -u $user -l; done
+	echo ======================================================================================
+	echo "Open Connections"
+	netstat -atunlp
+	echo ======================================================================================
+	echo "Active Firewall rules"
+	if command -v firewall-cmd >/dev/null 2>&1; then
+		firewall-cmd --list-all
+	else
+		iptables -L
+	fi
+	echo ======================================================================================
+	
   fi
+  
 elif [[ "$os" == "FreeBSD" || "$os" == "OpenBSD" ]]; then
 	echo ""
 	echo "This is a $os system"
