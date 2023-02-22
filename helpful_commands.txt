@@ -1,0 +1,25 @@
+Encrypt a file:
+  gpg -c file.txt
+  Delete the unencrypted file after!
+  
+Encrypt a directory: 
+  tar -cvf test.archive directory/
+  gpg -c test.archive
+  Delete the unencrypted file after!
+  
+Use SCP to copy files over ssh:
+  scp user@SRC_HOST:file1 user@DEST_HOST:file2
+Use scp to push a file via ssh:
+  scp file.txt remote_username@10.10.0.2:/remote/directory
+  
+Add a user to the sudoer group:
+  usermod -aG wheel/sudo username
+  
+Host Firewalls:
+  use something like firewalld or ufw if possible, the syntax is much easier.
+  IPtables: https://www.linode.com/docs/guides/control-network-traffic-with-iptables/
+    Allowing Incoming/Outgoing ssh connections
+    sudo iptables -A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+    sudo iptables -A OUTPUT -p tcp --sport 22 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+    
+Configure SSH with Keys: https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
