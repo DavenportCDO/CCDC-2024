@@ -1,0 +1,21 @@
+Game Plan:
+
+First hour:
+
+  Firewall team: 
+    -Start checking for network config errors with ping/ipconfig/traceroute
+    -Jump on the ubuntu machine and take a full backup of the firewall
+    -shutdown / rebuild firewall once linux and windows teams have pulled down scripts
+    
+  Linux team:
+    -pull down script from github
+    -take backups of any scored service config file / encrypt the backups
+    -run script while firewall team is initialising the firewall
+    -turn on host firewalls and allow necessary services
+    -start addressing issues found in script
+    
+  Windows team:
+    -pull down scripts from github
+    -take necessary backups
+    -run scripts
+    -fix issues found by script
