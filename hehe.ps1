@@ -24,6 +24,10 @@ Remove-NetFirewallRule -All
 New-NetFirewallRule -DisplayName "HTTP(S) external outbound" -Direction Outbound -RemotePort 80,443 -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "DNS Client" -Program "C:\Windows\system32\svchost.exe" -Direction Outbound -RemotePort 53 -Protocol UDP -Action Allow
 # New-NetFirewallRule -DisplayName "Internal traffic out" -Direction Outbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "ICMPv4 IN" -Direction Inbound -Protocol ICMPv4 -Action Allow
+New-NetFirewallRule -DisplayName "ICMPv6 IN" -Direction Inbound -Protocol ICMPv6 -Action Allow
+New-NetFirewallRule -DisplayName "ICMPv4 OUT" -Direction Outbound -Protocol ICMPv4 -Action Allow
+New-NetFirewallRule -DisplayName "ICMPv6 OUT" -Direction Outbound -Protocol ICMPv6 -Action Allow
 
 # Critical services, only uncomment the ones you need
 # New-NetFirewallRule -DisplayName "HTTP server" -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow
@@ -43,3 +47,6 @@ New-NetFirewallRule -DisplayName "DNS Client" -Program "C:\Windows\system32\svch
 # New-NetFirewallRule -DisplayName "POP3 scoring" -Direction Outbound -LocalPort 110 -Protocol TCP -Action Allow
 # New-NetFirewallRule -DisplayName "POP3 scoring UDP" -Direction Inbound -LocalPort 110 -Protocol UDP -Action Allow
 # New-NetFirewallRule -DisplayName "POP3 scoring UDP" -Direction Outbound -LocalPort 110 -Protocol UDP -Action Allow
+# New-NetFirewallRule -DisplayName "Docker engine" -Direction Inbound -LocalPort 2375 -Action Allow
+# New-NetFirewallRule -DisplayName "Docker stuff" -Direction Inbound -LocalPort 53 -Protocol TCP -Action Allow
+# New-NetFirewallRule -DisplayName "Docker stuff" -Direction Inbound -LocalPort 53 -Protocol UDP -Action Allow
