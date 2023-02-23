@@ -11,11 +11,13 @@ First hour:
     -pull down script from github
     -take backups of any scored service config file / encrypt the backups
     -run script while firewall team is initialising the firewall
+    -change passwords while Firewall team is working
     -turn on host firewalls and allow necessary services
     -start addressing issues found in script
     
   Windows team:
     -pull down scripts from github
     -take necessary backups
+    -change passwords while Firewall team is working
     -run scripts
     -fix issues found by script
