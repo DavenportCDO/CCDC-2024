@@ -20,14 +20,19 @@ netsh advfirewall export "C:\Program Files\Common Files\default.wfw"
 Remove-NetFirewallRule -All
 
 # Baseline stuff, use on all machines
-# New-NetFirewallRule -DisplayName "Internal traffic" -Direction Inbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "Internal traffic" -Direction Inbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "HTTP(S) external outbound" -Direction Outbound -RemotePort 80,443 -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "DNS Client" -Program "C:\Windows\system32\svchost.exe" -Direction Outbound -RemotePort 53 -Protocol UDP -Action Allow
-# New-NetFirewallRule -DisplayName "Internal traffic out" -Direction Outbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "Internal traffic out" -Direction Outbound -RemoteAddress "172.20.0.0" -Protocol TCP -Action Allow
 New-NetFirewallRule -DisplayName "ICMPv4 IN" -Direction Inbound -Protocol ICMPv4 -Action Allow
 New-NetFirewallRule -DisplayName "ICMPv6 IN" -Direction Inbound -Protocol ICMPv6 -Action Allow
 New-NetFirewallRule -DisplayName "ICMPv4 OUT" -Direction Outbound -Protocol ICMPv4 -Action Allow
 New-NetFirewallRule -DisplayName "ICMPv6 OUT" -Direction Outbound -Protocol ICMPv6 -Action Allow
+New-NetFirewallRule -DisplayName "Win10 compat OUT" -Direction Outbound -RemoteAddress "172.31.28.5" -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "Win10 compat IN" -Direction Inbound -RemoteAddress "172.31.28.5" -Protocol TCP -Action Allow
+New-NetFirewallRule -DisplayName "Win10 compat UDP OUT" -Direction Outbound -RemoteAddress "172.31.28.5" -Protocol UDP -Action Allow
+New-NetFirewallRule -DisplayName "Win10 compat UDP IN" -Direction Inbound -RemoteAddress "172.31.28.5" -Protocol UDP -Action Allow
+
 
 # Critical services, only uncomment the ones you need
 # New-NetFirewallRule -DisplayName "HTTP server" -Direction Inbound -LocalPort 80 -Protocol TCP -Action Allow
