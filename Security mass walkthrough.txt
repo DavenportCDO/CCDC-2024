@@ -1,0 +1,463 @@
+----------------------------Security-Stuff------------------------------------------------
+
+
+default—  Applies the default action to all client and server critical, 
+	high, and medium severity spyware/vulnerability protection events. 
+	It does not detect low and informational events.
+	
+strict— Applies the block response to all client and server critical, 
+	high and medium severity spyware/vulnerability protection events 
+	and uses the default action for low and informational events.
+	
+	
+
+
+
+----------------------------------Verify Subscription ---------------------------------------------------------------------------	
+1.)Verify that you have a Threat Prevention subscription.
+	select Device:> Licenses >and verify 
+		77that the Threat Prevention expiration date is in the future.
+	
+2.) Download latest content
+	-Select Device >Dynamic Updates >and click Check Now 
+		at the bottom of the page to retrieve the latest signatures.
+	
+	-Actions column, click Download and install 
+		the latest Antivirus updates and then download and then Install 
+		the latest Applications and Threats updates.
+	
+3.) Schedule content updates.
+	-Select Device>Dynamic Updates >and then click Schedule
+		to automatically retrieve signature updates for 
+		Antivirus and Applications and Threats.
+	
+	-Specify the frequency and timing for the updates:
+	
+		download-only—The firewall automatically downloads 
+		the latest updates per the schedule 
+		you define but you must manually Install them
+	
+		download-and-install—The firewall automatically downloads and installs
+		the updates per the schedule you define.
+		
+	-click ok
+	
+	
+-----------------------------------------------------------------------------------------------------------
+4.)
+	-(Optional) Create custom security profiles for antivirus, anti-spyware, and vulnerability protection.
+	-To create custom Antivirus Profiles, select Objects >Security Profiles>Antivirus 
+	and Add a new profile. Use the Antivirus profile transition steps to safely reach your goal.
+	
+	-To create custom Anti-Spyware Profiles, >select Objects
+	Security Profiles>Anti-Spyware >and Add a new profile. 
+	Use the Anti-Spyware profile transition steps to safely reach your goal.
+	
+	-To create custom Vulnerability Protection Profiles, select Objects>Security Profiles>Vulnerability 
+	Protection and Add a new profile.
+	Use the Vulnerability Protection profile transition steps to safely reach your goal.
+	
+5.) Attach security profiles to your Security policy rules.
+(security profile will automatically block connections that traffic ... See monitor blocked ip's)
+	-Select Policies>Security >and select the rule you want to modify.
+	-In the Actions tab, select Profiles as the Profile Type.
+	-Select the security profiles you created for Antivirus, Anti-Spyware, and Vulnerability Protection.
+	
+6.) Commit
+
+ (Monitor>Logs>Threat) to see if you can block applications for which you receive alerts or if you need to allow them.
+ The default action for most low and informational severity signatures is alert or allow. Unless you have a specific need to alert on all low and informational signatures, configure the default action from the start.
+ 
+ 
+
+ 
+ 
+ 
+----------------------Best Practice Internet Gateway File Blocking Profile:--------------------------------
+
+Use the predefined strict file blocking profile to block files that are commonly included in malware attack campaigns 
+and that have no real use case for upload/download. Blocking these files reduces the attack surface.
+ The predefined strict profile blocks batch files, DLLs, Java class files, help files,
+ Windows shortcuts (.lnk), BitTorrent files, .rar files, .tar files, encrypted-rar and encrypted-zip files, 
+ multi-level encoded files (files encoded or compressed up to four times), .hta files, 
+ and Windows Portable Executable (PE) files, which include 
+ .exe, .cpl, .dll, .ocx, .sys, .scr, .drv, .efi, .fon, and .pif files. 
+ The predefined strict profile alerts on all other file types for visibility into other file transfers
+ so that you can determine if you need to make policy changes.
+ 
+ 
+ Review the data filtering logs (MonitorLogsData Filtering) 
+ to identify file types and talk with business stakeholders 
+ about the file types their applications require.
+ 
+What if I can’t block all of the file types covered in the predefined strict profile?
+If you have mission-critical applications that prevent you from 
+blocking all of the file types included in the predefined strict profile,
+you can clone the profile and modify it for those users 
+who must transfer a file type covered
+
+
+
+
+
+
+-----------------------Best Practice Internet Gateway Antivirus Profile----------------------------------------------
+Clone the default Antivirus profile and edit it. 
+
+
+
+
+
+----------------Best Practice Internet Gateway Vulnerability Protection Profile---------------------------------
+Attach a Vulnerability Protection profile to all allowed traffic 
+to protect against buffer overflows, illegal code execution,
+and other attempts to exploit client- and server-side vulnerabilities. 
+Clone the predefined strict Vulnerability Protection profile. 
+
+
+For the best practice profile, for each rule except simple-client-informational 
+and simple-server-informational, double-click the Rule Name and change 
+Packet Capture from disable to single-packet to enable packet capture (PCAP)
+for each rule so you can track down the source of potential attacks. 
+Don’t change the rest of the settings. Download content updates automatically 
+and install them as soon as possible so that the signature set is always up-to-date.
+
+Don’t enable PCAP for informational activity because it generates a relatively high volume
+ of that traffic and it’s not particularly useful compared to potential threats. 
+ Apply extended PCAP (as opposed to single PCAP) to high-value traffic to 
+ which you apply the alert Action. 
+ 
+Apply single PCAP to traffic you block. The default number of packets that extended PCAP records 
+and sends to the management plane is five packets, which is the recommended value. In most cases, 
+capturing five packets provides enough information to analyze the threat. If too much PCAP traffic 
+is sent to the management plane, then capturing more than five packets may result in dropping PCAPs.
+
+
+
+-------------------Best Practice Internet Gateway Anti-Spyware Profile--------------------------------------
+
+Attach an Anti-Spyware profile to all allowed traffic to detect command and control traffic (C2) 
+initiated from malicious code running on a server or endpoint and prevent compromised systems 
+from establishing an outbound connection from your network. 
+Clone the predefined strict Anti-Spyware profile and edit it. 
+
+ Edit the profile to enable DNS sinkhole and packet capture to help you track down 
+ the endpoint that attempted to resolve the malicious domain. The best practice
+ Anti-Spyware profile retains the default Action to reset the connection when the 
+ firewall detects a medium, high, or critical severity threat, and enables single
+ packet capture (PCAP) for those threats.
+ 
+ The best practice Action on DNS Queries is to block or to sinkhole DNS queries
+ for known malicious domains. It is also a best practice to enable PCAPs.
+ 
+ Enabling DNS sinkhole identifies potentially compromised hosts that attempt 
+ to access suspicious domains by tracking the hosts and preventing them from 
+ accessing those domains. Enable DNS sinkhole when the firewall can’t see the
+ originator of the DNS query (typically when the firewall is north of the local DNS server)
+ so that you can identify infected hosts. Don’t enable DNS sinkhole when the firewall can see 
+ the originator of the DNS query (typically when the firewall is south of the local DNS server; 
+ in this case, the firewall’s blocking rules and logs provide visibility into the traffic) 
+ or on traffic you block.
+ 
+ 
+ 
+ --------------------Best Practice Internet Gateway URL Filtering Profile------------------------------------
+Use PAN-DB URL filtering to prevent access to web content high-risk for being malicious. 
+Attach a URL Filtering profile to all rules that allow access to web-based applications 
+to protect against URLs that Palo Alto Networks has observed hosting 
+malware or exploitive content.
+
+ The best practice URL Filtering profile sets all known dangerous URL categories to block. 
+ These include command-and-control, copyright-infringement, dynamic-dns, extremism, malware,
+ phishing, proxy-avoidance-and-anonymizers, unknown, newly-registered-domain, grayware, and parked. 
+ Failure to block these dangerous categories puts you at risk for exploit infiltration, 
+ malware download, command-and-control activity, and data exfiltration.
+ 
+ In addition to blocking known bad categories, alert on all other categories so you have visibility 
+ into the sites your users are visiting. If you need to phase in a block policy, set categories
+ to continue and create a custom response page to educate users about your acceptable use policies
+ and alert them to the fact they are visiting a site that may pose a threat. This paves the way for 
+ you to outright block the categories after a monitoring period.
+ 
+ If you have a business purpose for a dynamic DNS domain, 
+ then make sure you allow those URLs in your URL Filtering profile.
+ 
+ If you are running PAN-OS 9.0.4 or later, ensure that the firewall 
+ handles user web requests as securely as possible by enabling the o
+ ption to hold client requests (enter config then set deviceconfig setting
+ ctd hold-client-request yes). By default, the firewall allows requests while 
+ it looks up an uncached URL category in PAN-DB and then enforces the appropriate
+ policy when the server responds. Maximize security by opting to hold requests during 
+ this lookup. For details, see Configure URL Filtering.
+ 
+ -----------------------What if I can’t block all of the recommended categories?-------------------------------
+ If users need access to sites in the blocked categories,
+ consider creating an allow list for just the specific sites, 
+ if you feel the risk is justified.
+ 
+ On categories you decide to allow, make sure you set up credential phishing prevention
+ to ensure that users aren’t submitting their corporate 
+ credentials to a site that may be hosting a phishing attack.
+ 
+ Allowing traffic to a recommended block category poses the following risks:
+	malware—Sites known to host malware or used for 
+	command and control (C2) traffic.
+	May also exhibit Exploit Kits.
+	
+	phishing—Known to host credential phishing pages
+	or phishing for personal identification.
+	
+	dynamic-dns—Hosts and domain names for systems with
+	dynamically assigned IP addresses and which are oftentimes
+	used to deliver malware payloads or C2 traffic. Also, 
+	dynamic DNS domains do not go through the same vetting process
+	as domains that are registered by a reputable domain 
+	registration company, and are therefore less trustworthy.
+	
+	unknown—Sites that have not yet been identified by PAN-DB. 
+	If availability is critical to your business and you must allow the traffic,
+	alert on unknown sites, apply the best practice Security profiles to the traffic,
+	and investigate the alerts.
+	
+------------------------------------------------------------------------------------------------	
+A security profile is only active when these two things are in place:
+The security profile is in a profile group
+A profile group is a set of profiles—it can contain one profile from each profile type.
+A security rule is referencing the profile group
+
+1. Use the profile’s dashboard to create and manage your profiles (Security ServicesChoose Your Profile Type).
+
+2.)Add the profile to a profile group ( Security ServicesProfile Groups).
+
+3.)Reference the profile group in a security rule.
+
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/zone-protection-and-dos-protection/zone-defense/zone-protection-profiles
+
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/decrypt-traffic-for-full-visibility-and-threat-inspection
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/create-user-groups-for-access-to-allowed-applications
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/identify-your-application-allow-list/map-applications-to-business-goals-for-a-simplified-rulebase
+
+
+------------------------------Flood--Protection-------------------------------------------------------
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/zone-protection-and-dos-protection/zone-defense/zone-protection-profiles/flood-protection
+A Zone Protection profile with flood protection configured defends an entire ingress zone against 
+SYN, ICMP, ICMPv6, UDP, and other IP flood attacks. The firewall measures the aggregate amount of each flood 
+type entering the zone in new connections-per-second (CPS) and compares the totals to the thresholds 
+you configure in the Zone Protection profile. (You protect critical individual devices within a zone 
+with DoS Protection profiles and policy rules.)
+
+For each flood type, you set three thresholds for new CPS entering the zone, 
+and you can set a drop Action for SYN floods. If you know the baseline CPS rates for the zone, 
+use these guidelines to set the initial thresholds, and then monitor and adjust the thresholds as necessary.
+
+	Alarm Rate—
+	The new CPS threshold to trigger an alarm. Target setting the Alarm Rate
+	to 15-20% above the average CPS rate 
+	for the zone so that normal fluctuations don’t cause alerts.
+
+	Activate—
+	The new CPS threshold to activate the flood protection mechanism 
+	and begin dropping new connections. For ICMP, ICMPv6, UDP, and other IP floods,
+	the protection mechanism is Random Early Drop (RED, also known as Random Early Detection).
+	For SYN floods only, you can set the drop Action to SYN Cookies or RED. 
+	Target setting the Activate rate to just above the peak CPS rate for the zone to begin
+	mitigating potential floods.
+	
+	Maximum—
+	The number of connections-per-second to drop incoming packets when RED is the protection mechanism. 
+	Target setting the Maximum rate to approximately 80-90% of firewall capacity, taking into account 
+	other features that consume firewall resources.
+	
+Flood-Protection-Pro-Tips-------------------------------------------
+-If you don’t know the baseline CPS rates for the zone, start by setting the Maximum CPS rate to approximately 80-90%
+ of firewall capacity and use it to derive reasonable flood mitigation alarm and activation rates.
+ 
+-Set the Alarm Rate and Activate rate based on the Maximum rate. 
+ For example, you could set the Alarm Rate to half the Maximum rate 
+ and adjust it depending on how many alarms you receive 
+ and the firewall resources being consumed. 
+ 
+- Be careful setting the Activate Rate since it begins to drop connections. 
+ Because normal traffic loads experience some fluctuation, it’s best not to 
+ drop connections too aggressively. Err on the high side and adjust the rate 
+ if firewall resources are impacted.
+ 
+-SYN Flood Protection is the only type for which you set the drop Action.
+ Start by setting the Action to SYN Cookies. SYN Cookies treats legitimate
+ traffic fairly and only drops traffic that fails the SYN handshake
+ 
+-while using Random Early Drop drops traffic randomly, so RED may affect legitimate traffic. 
+
+-However, SYN Cookies is more resource-intensive because the firewall acts as a proxy for the target server 
+and handles the three-way handshake for the server.
+
+-The tradeoff is not dropping legitimate traffic (SYN Cookies) versus preserving firewall resources (RED)
+
+-Monitor the firewall, and if SYN Cookies consumes too many resources, switch to RED. 
+If you don’t have a dedicated DDoS prevention device in front of the firewall, 
+always use RED as the drop mechanism.
+
+
+------------------------------Recon--Protection-------------------------------------------------------
+-Reconnaissance activities are often preludes to a network attack. 
+Enable Reconnaissance Protection on all zones to defend 
+against port scans and host sweeps:
+
+	-Port scans discover open ports on a network. 
+	A port scanning tool sends client requests 
+	to a range of port numbers on a host, with the 
+	goal of locating an active port to exploit in an attack. 
+	Zone Protection profiles defend against TCP and UDP port scans.
+	
+	-Host sweeps examine multiple hosts to determine 
+	if a specific port is open and vulnerable.
+	
+Configure Reconnaissance Protection:
+	Configure one of the following Reconnaissance Protection actions for the firewall 
+	to take in response to the corresponding reconnaissance attempt:
+	
+	-Allow:
+	—The firewall allows the port scan or host sweep reconnaissance to continue.
+	
+	-Alert:
+	—The firewall generates an alert for each port scan or host sweep that
+	matches the configured threshold within the specified time interval.
+	Alert is the default action.
+	
+	-Block
+	—The firewall drops all subsequent packets from the source to 
+	the destination for the remainder of the specified time interval.
+	
+	-Block IP
+	—The firewall drops all subsequent packets for the specified Duration,
+	in seconds (the range is 1-3,600). Track By determines whether the
+	firewall blocks source or source-and-destination traffic.
+
+	1.Configure Reconnaissance Protection.:
+		-Select Network > Network Profiles > Zone Protection.
+		
+		-Select a Zone Protection profile 
+		or Add a new profile and enter a Name for it.
+		
+		-On the Reconnaissance Protection tab,
+		select the scan types to protect against.
+		
+		-Select an Action for each scan. 
+		If you select Block IP, you must also configure Track By
+		(source or source-and-destination) and Duration.
+		
+		-Set the Interval in seconds. 
+		This options defines the time interval
+		for port scan and host sweep detection.
+		
+		-Set the Threshold.
+		The threshold defines the number of port scan 
+		events or host sweeps that occurs within the 
+		interval configured above that triggers an action.
+
+	2. Configure a Source Address Exclusion.
+	
+		-On the Reconnaissance Protection tab, 
+			Add a Source Address Exclusion.
+		
+		-Enter a descriptive Name 
+			for the address you want to exclude.
+		
+		Set the Address Type to IPv4 or IPv6
+			and then select an address object or enter an IP address.
+	
+		Click OK.
+		
+		Click OK 
+			to save the Zone Protection profile.
+		
+		Commit your changes.
+		
+		
+		
+---------Packet-Based Attack Protection-----------------ZONES-----------------------	
+	Packet-based attacks take many forms.
+	Zone Protection profiles check 
+	IP, TCP, ICMP, IPv6, and ICMPv6 
+	packet headers and protect a zone by:
+		-Dropping packets with undesirable characteristics.
+		-Stripping undesirable options from packets before admitting them to the zone.
+		
+Select the drop characteristics for each packet type when you
+Configure Packet Based Attack Protection.
+The best practices for each IP protocol are:
+	
+	-IP Drop:
+	—Drop Unknown and Malformed packets. Also drop Strict Source Routing 
+	and Loose Source Routing because allowing these options allows adversaries
+	to bypass Security policy rules that use the Destination IP address 
+	as the matching criteria. For internal zones only, check Spoofed IP Address
+	so only traffic with a source address that matches the 
+	firewall routing table can access the zone.
+	
+	-TCP Drop:
+	—Retain the default TCP SYN with Data and TCP SYNACK with Data drops,
+	drop Mismatched overlapping TCP segment and Split Handshake packets, 
+	and strip the TCP Timestamp from packets.
+	
+	-ICMP Drop:
+	—There are no standard best practice settings because dropping
+	ICMP packets depends on how you use ICMP (or if you use ICMP).
+	For example, if you want to block ping activity, 
+	you can block ICMP Ping ID 0.
+	
+	-IPv6 Drop:
+	—If compliance matters, ensure that the firewall 
+	drops packets	with non-compliant routing headers,
+	extensions, etc.
+	
+	-ICMPv6 Drop:
+	—If compliance matters, ensure that the firewall 
+	drops certain packets if the packets don’t 
+	match a Security policy rule.
+	
+	
+	
+		Create a Zone Protection profile and configure Packet-Based Attack Protection settings.
+		
+		Select Network>Network Profiles>Zone Protection and Add a new profile.
+		
+		Enter a Name for the profile and an optional Description.
+		
+		Select Packet Based Attack Protection.
+		
+		On each tab (IP Drop, TCP Drop, ICMP Drop, IPv6 Drop, and ICMPv6 Drop), select the Packet-Based Attack Protection settings you want to enforce to protect a zone.
+		
+		Click OK.
+		
+		
+		Apply the Zone Protection profile to a security zone that is assigned to interfaces you want to protect.
+		
+		Select Network>Zones >and select the zone where you want to assign the Zone Protection profile.
+		
+		Add the Interfaces belonging to the zone.
+		
+		For Zone Protection Profile, select the profile you just created.
+		
+		Click OK.
+		
+		Commit your changes.
+		
+		Access the CLI.
+		
+		Use the operational CLI command 
+		>set system setting additional-threat-log on.
+		Default is off.
+	
+	
+	
+	
+	
+	Configure Tunnel Content Inspection:
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/networking/tunnel-content-inspection/configure-tunnel-content-inspection
+	
+		Create User Groups for Access to Allowed Applications:
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/create-user-groups-for-access-to-allowed-applications
+
+Decrypt Traffic for Full Visibility and Threat Inspection:
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/decrypt-traffic-for-full-visibility-and-threat-inspection

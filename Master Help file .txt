@@ -1,0 +1,996 @@
+
+
+default—  Applies the default action to all client and server critical, 
+	high, and medium severity spyware/vulnerability protection events. 
+	It does not detect low and informational events.
+	
+strict— Applies the block response to all client and server critical, 
+	high and medium severity spyware/vulnerability protection events 
+	and uses the default action for low and informational events.
+	
+	
+
+
+
+----------------------------------Verify Subscription ---------------------------------------------------------------------------	
+1.)Verify that you have a Threat Prevention subscription.
+	select Device:> Licenses >and verify 
+		77that the Threat Prevention expiration date is in the future.
+	
+2.) Download latest content
+	-Select Device >Dynamic Updates >and click Check Now 
+		at the bottom of the page to retrieve the latest signatures.
+	
+	-Actions column, click Download and install 
+		the latest Antivirus updates and then download and then Install 
+		the latest Applications and Threats updates.
+	
+3.) Schedule content updates.
+	-Select Device>Dynamic Updates >and then click Schedule
+		to automatically retrieve signature updates for 
+		Antivirus and Applications and Threats.
+	
+	-Specify the frequency and timing for the updates:
+	
+		download-only—The firewall automatically downloads 
+		the latest updates per the schedule 
+		you define but you must manually Install them
+	
+		download-and-install—The firewall automatically downloads and installs
+		the updates per the schedule you define.
+		
+	-click ok
+	
+	
+-----------------------------------------------------------------------------------------------------------
+4.)
+	-(Optional) Create custom security profiles for antivirus, anti-spyware, and vulnerability protection.
+	-To create custom Antivirus Profiles, select Objects >Security Profiles>Antivirus 
+	and Add a new profile. Use the Antivirus profile transition steps to safely reach your goal.
+	
+	-To create custom Anti-Spyware Profiles, >select Objects
+	Security Profiles>Anti-Spyware >and Add a new profile. 
+	Use the Anti-Spyware profile transition steps to safely reach your goal.
+	
+	-To create custom Vulnerability Protection Profiles, select Objects>Security Profiles>Vulnerability 
+	Protection and Add a new profile.
+	Use the Vulnerability Protection profile transition steps to safely reach your goal.
+	
+5.) Attach security profiles to your Security policy rules.
+(security profile will automatically block connections that traffic ... See monitor blocked ip's)
+	-Select Policies>Security >and select the rule you want to modify.
+	-In the Actions tab, select Profiles as the Profile Type.
+	-Select the security profiles you created for Antivirus, Anti-Spyware, and Vulnerability Protection.
+	
+6.) Commit
+
+ (Monitor>Logs>Threat) to see if you can block applications for which you receive alerts or if you need to allow them.
+ The default action for most low and informational severity signatures is alert or allow. Unless you have a specific need to alert on all low and informational signatures, configure the default action from the start.
+ 
+ 
+
+ 
+ 
+ 
+----------------------Best Practice Internet Gateway File Blocking Profile:--------------------------------
+
+Use the predefined strict file blocking profile to block files that are commonly included in malware attack campaigns 
+and that have no real use case for upload/download. Blocking these files reduces the attack surface.
+ The predefined strict profile blocks batch files, DLLs, Java class files, help files,
+ Windows shortcuts (.lnk), BitTorrent files, .rar files, .tar files, encrypted-rar and encrypted-zip files, 
+ multi-level encoded files (files encoded or compressed up to four times), .hta files, 
+ and Windows Portable Executable (PE) files, which include 
+ .exe, .cpl, .dll, .ocx, .sys, .scr, .drv, .efi, .fon, and .pif files. 
+ The predefined strict profile alerts on all other file types for visibility into other file transfers
+ so that you can determine if you need to make policy changes.
+ 
+ 
+ Review the data filtering logs (MonitorLogsData Filtering) 
+ to identify file types and talk with business stakeholders 
+ about the file types their applications require.
+ 
+What if I can’t block all of the file types covered in the predefined strict profile?
+If you have mission-critical applications that prevent you from 
+blocking all of the file types included in the predefined strict profile,
+you can clone the profile and modify it for those users 
+who must transfer a file type covered
+
+
+
+
+
+
+-----------------------Best Practice Internet Gateway Antivirus Profile----------------------------------------------
+Clone the default Antivirus profile and edit it. 
+
+
+
+
+
+----------------Best Practice Internet Gateway Vulnerability Protection Profile---------------------------------
+Attach a Vulnerability Protection profile to all allowed traffic 
+to protect against buffer overflows, illegal code execution,
+and other attempts to exploit client- and server-side vulnerabilities. 
+Clone the predefined strict Vulnerability Protection profile. 
+
+
+For the best practice profile, for each rule except simple-client-informational 
+and simple-server-informational, double-click the Rule Name and change 
+Packet Capture from disable to single-packet to enable packet capture (PCAP)
+for each rule so you can track down the source of potential attacks. 
+Don’t change the rest of the settings. Download content updates automatically 
+and install them as soon as possible so that the signature set is always up-to-date.
+
+Don’t enable PCAP for informational activity because it generates a relatively high volume
+ of that traffic and it’s not particularly useful compared to potential threats. 
+ Apply extended PCAP (as opposed to single PCAP) to high-value traffic to 
+ which you apply the alert Action. 
+ 
+Apply single PCAP to traffic you block. The default number of packets that extended PCAP records 
+and sends to the management plane is five packets, which is the recommended value. In most cases, 
+capturing five packets provides enough information to analyze the threat. If too much PCAP traffic 
+is sent to the management plane, then capturing more than five packets may result in dropping PCAPs.
+
+
+
+-------------------Best Practice Internet Gateway Anti-Spyware Profile--------------------------------------
+
+Attach an Anti-Spyware profile to all allowed traffic to detect command and control traffic (C2) 
+initiated from malicious code running on a server or endpoint and prevent compromised systems 
+from establishing an outbound connection from your network. 
+Clone the predefined strict Anti-Spyware profile and edit it. 
+
+ Edit the profile to enable DNS sinkhole and packet capture to help you track down 
+ the endpoint that attempted to resolve the malicious domain. The best practice
+ Anti-Spyware profile retains the default Action to reset the connection when the 
+ firewall detects a medium, high, or critical severity threat, and enables single
+ packet capture (PCAP) for those threats.
+ 
+ The best practice Action on DNS Queries is to block or to sinkhole DNS queries
+ for known malicious domains. It is also a best practice to enable PCAPs.
+ 
+ Enabling DNS sinkhole identifies potentially compromised hosts that attempt 
+ to access suspicious domains by tracking the hosts and preventing them from 
+ accessing those domains. Enable DNS sinkhole when the firewall can’t see the
+ originator of the DNS query (typically when the firewall is north of the local DNS server)
+ so that you can identify infected hosts. Don’t enable DNS sinkhole when the firewall can see 
+ the originator of the DNS query (typically when the firewall is south of the local DNS server; 
+ in this case, the firewall’s blocking rules and logs provide visibility into the traffic) 
+ or on traffic you block.
+ 
+ 
+ 
+ --------------------Best Practice Internet Gateway URL Filtering Profile------------------------------------
+Use PAN-DB URL filtering to prevent access to web content high-risk for being malicious. 
+Attach a URL Filtering profile to all rules that allow access to web-based applications 
+to protect against URLs that Palo Alto Networks has observed hosting 
+malware or exploitive content.
+
+ The best practice URL Filtering profile sets all known dangerous URL categories to block. 
+ These include command-and-control, copyright-infringement, dynamic-dns, extremism, malware,
+ phishing, proxy-avoidance-and-anonymizers, unknown, newly-registered-domain, grayware, and parked. 
+ Failure to block these dangerous categories puts you at risk for exploit infiltration, 
+ malware download, command-and-control activity, and data exfiltration.
+ 
+ In addition to blocking known bad categories, alert on all other categories so you have visibility 
+ into the sites your users are visiting. If you need to phase in a block policy, set categories
+ to continue and create a custom response page to educate users about your acceptable use policies
+ and alert them to the fact they are visiting a site that may pose a threat. This paves the way for 
+ you to outright block the categories after a monitoring period.
+ 
+ If you have a business purpose for a dynamic DNS domain, 
+ then make sure you allow those URLs in your URL Filtering profile.
+ 
+ If you are running PAN-OS 9.0.4 or later, ensure that the firewall 
+ handles user web requests as securely as possible by enabling the o
+ ption to hold client requests (enter config then set deviceconfig setting
+ ctd hold-client-request yes). By default, the firewall allows requests while 
+ it looks up an uncached URL category in PAN-DB and then enforces the appropriate
+ policy when the server responds. Maximize security by opting to hold requests during 
+ this lookup. For details, see Configure URL Filtering.
+ 
+ -----------------------What if I can’t block all of the recommended categories?-------------------------------
+ If users need access to sites in the blocked categories,
+ consider creating an allow list for just the specific sites, 
+ if you feel the risk is justified.
+ 
+ On categories you decide to allow, make sure you set up credential phishing prevention
+ to ensure that users aren’t submitting their corporate 
+ credentials to a site that may be hosting a phishing attack.
+ 
+ Allowing traffic to a recommended block category poses the following risks:
+	malware—Sites known to host malware or used for 
+	command and control (C2) traffic.
+	May also exhibit Exploit Kits.
+	
+	phishing—Known to host credential phishing pages
+	or phishing for personal identification.
+	
+	dynamic-dns—Hosts and domain names for systems with
+	dynamically assigned IP addresses and which are oftentimes
+	used to deliver malware payloads or C2 traffic. Also, 
+	dynamic DNS domains do not go through the same vetting process
+	as domains that are registered by a reputable domain 
+	registration company, and are therefore less trustworthy.
+	
+	unknown—Sites that have not yet been identified by PAN-DB. 
+	If availability is critical to your business and you must allow the traffic,
+	alert on unknown sites, apply the best practice Security profiles to the traffic,
+	and investigate the alerts.
+	
+------------------------------------------------------------------------------------------------	
+A security profile is only active when these two things are in place:
+The security profile is in a profile group
+A profile group is a set of profiles—it can contain one profile from each profile type.
+A security rule is referencing the profile group
+
+1. Use the profile’s dashboard to create and manage your profiles (Security ServicesChoose Your Profile Type).
+
+2.)Add the profile to a profile group ( Security ServicesProfile Groups).
+
+3.)Reference the profile group in a security rule.
+
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/zone-protection-and-dos-protection/zone-defense/zone-protection-profiles
+
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/decrypt-traffic-for-full-visibility-and-threat-inspection
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/create-user-groups-for-access-to-allowed-applications
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/identify-your-application-allow-list/map-applications-to-business-goals-for-a-simplified-rulebase
+
+
+------------------------------Flood--Protection-------------------------------------------------------
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/zone-protection-and-dos-protection/zone-defense/zone-protection-profiles/flood-protection
+A Zone Protection profile with flood protection configured defends an entire ingress zone against 
+SYN, ICMP, ICMPv6, UDP, and other IP flood attacks. The firewall measures the aggregate amount of each flood 
+type entering the zone in new connections-per-second (CPS) and compares the totals to the thresholds 
+you configure in the Zone Protection profile. (You protect critical individual devices within a zone 
+with DoS Protection profiles and policy rules.)
+
+For each flood type, you set three thresholds for new CPS entering the zone, 
+and you can set a drop Action for SYN floods. If you know the baseline CPS rates for the zone, 
+use these guidelines to set the initial thresholds, and then monitor and adjust the thresholds as necessary.
+
+	Alarm Rate—
+	The new CPS threshold to trigger an alarm. Target setting the Alarm Rate
+	to 15-20% above the average CPS rate 
+	for the zone so that normal fluctuations don’t cause alerts.
+
+	Activate—
+	The new CPS threshold to activate the flood protection mechanism 
+	and begin dropping new connections. For ICMP, ICMPv6, UDP, and other IP floods,
+	the protection mechanism is Random Early Drop (RED, also known as Random Early Detection).
+	For SYN floods only, you can set the drop Action to SYN Cookies or RED. 
+	Target setting the Activate rate to just above the peak CPS rate for the zone to begin
+	mitigating potential floods.
+	
+	Maximum—
+	The number of connections-per-second to drop incoming packets when RED is the protection mechanism. 
+	Target setting the Maximum rate to approximately 80-90% of firewall capacity, taking into account 
+	other features that consume firewall resources.
+	
+Flood-Protection-Pro-Tips-------------------------------------------
+-If you don’t know the baseline CPS rates for the zone, start by setting the Maximum CPS rate to approximately 80-90%
+ of firewall capacity and use it to derive reasonable flood mitigation alarm and activation rates.
+ 
+-Set the Alarm Rate and Activate rate based on the Maximum rate. 
+ For example, you could set the Alarm Rate to half the Maximum rate 
+ and adjust it depending on how many alarms you receive 
+ and the firewall resources being consumed. 
+ 
+- Be careful setting the Activate Rate since it begins to drop connections. 
+ Because normal traffic loads experience some fluctuation, it’s best not to 
+ drop connections too aggressively. Err on the high side and adjust the rate 
+ if firewall resources are impacted.
+ 
+-SYN Flood Protection is the only type for which you set the drop Action.
+ Start by setting the Action to SYN Cookies. SYN Cookies treats legitimate
+ traffic fairly and only drops traffic that fails the SYN handshake
+ 
+-while using Random Early Drop drops traffic randomly, so RED may affect legitimate traffic. 
+
+-However, SYN Cookies is more resource-intensive because the firewall acts as a proxy for the target server 
+and handles the three-way handshake for the server.
+
+-The tradeoff is not dropping legitimate traffic (SYN Cookies) versus preserving firewall resources (RED)
+
+-Monitor the firewall, and if SYN Cookies consumes too many resources, switch to RED. 
+If you don’t have a dedicated DDoS prevention device in front of the firewall, 
+always use RED as the drop mechanism.
+
+
+------------------------------Recon--Protection-------------------------------------------------------
+-Reconnaissance activities are often preludes to a network attack. 
+Enable Reconnaissance Protection on all zones to defend 
+against port scans and host sweeps:
+
+	-Port scans discover open ports on a network. 
+	A port scanning tool sends client requests 
+	to a range of port numbers on a host, with the 
+	goal of locating an active port to exploit in an attack. 
+	Zone Protection profiles defend against TCP and UDP port scans.
+	
+	-Host sweeps examine multiple hosts to determine 
+	if a specific port is open and vulnerable.
+	
+Configure Reconnaissance Protection:
+	Configure one of the following Reconnaissance Protection actions for the firewall 
+	to take in response to the corresponding reconnaissance attempt:
+	
+	-Allow:
+	—The firewall allows the port scan or host sweep reconnaissance to continue.
+	
+	-Alert:
+	—The firewall generates an alert for each port scan or host sweep that
+	matches the configured threshold within the specified time interval.
+	Alert is the default action.
+	
+	-Block
+	—The firewall drops all subsequent packets from the source to 
+	the destination for the remainder of the specified time interval.
+	
+	-Block IP
+	—The firewall drops all subsequent packets for the specified Duration,
+	in seconds (the range is 1-3,600). Track By determines whether the
+	firewall blocks source or source-and-destination traffic.
+
+	1.Configure Reconnaissance Protection.:
+		-Select Network > Network Profiles > Zone Protection.
+		
+		-Select a Zone Protection profile 
+		or Add a new profile and enter a Name for it.
+		
+		-On the Reconnaissance Protection tab,
+		select the scan types to protect against.
+		
+		-Select an Action for each scan. 
+		If you select Block IP, you must also configure Track By
+		(source or source-and-destination) and Duration.
+		
+		-Set the Interval in seconds. 
+		This options defines the time interval
+		for port scan and host sweep detection.
+		
+		-Set the Threshold.
+		The threshold defines the number of port scan 
+		events or host sweeps that occurs within the 
+		interval configured above that triggers an action.
+
+	2. Configure a Source Address Exclusion.
+	
+		-On the Reconnaissance Protection tab, 
+			Add a Source Address Exclusion.
+		
+		-Enter a descriptive Name 
+			for the address you want to exclude.
+		
+		Set the Address Type to IPv4 or IPv6
+			and then select an address object or enter an IP address.
+	
+		Click OK.
+		
+		Click OK 
+			to save the Zone Protection profile.
+		
+		Commit your changes.
+		
+		
+		
+---------Packet-Based Attack Protection-----------------ZONES-----------------------	
+	Packet-based attacks take many forms.
+	Zone Protection profiles check 
+	IP, TCP, ICMP, IPv6, and ICMPv6 
+	packet headers and protect a zone by:
+		-Dropping packets with undesirable characteristics.
+		-Stripping undesirable options from packets before admitting them to the zone.
+		
+Select the drop characteristics for each packet type when you
+Configure Packet Based Attack Protection.
+The best practices for each IP protocol are:
+	
+	-IP Drop:
+	—Drop Unknown and Malformed packets. Also drop Strict Source Routing 
+	and Loose Source Routing because allowing these options allows adversaries
+	to bypass Security policy rules that use the Destination IP address 
+	as the matching criteria. For internal zones only, check Spoofed IP Address
+	so only traffic with a source address that matches the 
+	firewall routing table can access the zone.
+	
+	-TCP Drop:
+	—Retain the default TCP SYN with Data and TCP SYNACK with Data drops,
+	drop Mismatched overlapping TCP segment and Split Handshake packets, 
+	and strip the TCP Timestamp from packets.
+	
+	-ICMP Drop:
+	—There are no standard best practice settings because dropping
+	ICMP packets depends on how you use ICMP (or if you use ICMP).
+	For example, if you want to block ping activity, 
+	you can block ICMP Ping ID 0.
+	
+	-IPv6 Drop:
+	—If compliance matters, ensure that the firewall 
+	drops packets	with non-compliant routing headers,
+	extensions, etc.
+	
+	-ICMPv6 Drop:
+	—If compliance matters, ensure that the firewall 
+	drops certain packets if the packets don’t 
+	match a Security policy rule.
+	
+	
+	
+		Create a Zone Protection profile and configure Packet-Based Attack Protection settings.
+		
+		Select Network>Network Profiles>Zone Protection and Add a new profile.
+		
+		Enter a Name for the profile and an optional Description.
+		
+		Select Packet Based Attack Protection.
+		
+		On each tab (IP Drop, TCP Drop, ICMP Drop, IPv6 Drop, and ICMPv6 Drop), select the Packet-Based Attack Protection settings you want to enforce to protect a zone.
+		
+		Click OK.
+		
+		
+		Apply the Zone Protection profile to a security zone that is assigned to interfaces you want to protect.
+		
+		Select Network>Zones >and select the zone where you want to assign the Zone Protection profile.
+		
+		Add the Interfaces belonging to the zone.
+		
+		For Zone Protection Profile, select the profile you just created.
+		
+		Click OK.
+		
+		Commit your changes.
+		
+		Access the CLI.
+		
+		Use the operational CLI command 
+		>set system setting additional-threat-log on.
+		Default is off.
+	
+	
+	
+	
+	
+	Configure Tunnel Content Inspection:
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/networking/tunnel-content-inspection/configure-tunnel-content-inspection
+	
+		Create User Groups for Access to Allowed Applications:
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/create-user-groups-for-access-to-allowed-applications
+
+Decrypt Traffic for Full Visibility and Threat Inspection:
+https://docs.paloaltonetworks.com/best-practices/9-1/internet-gateway-best-practices/best-practice-internet-gateway-security-policy/decrypt-traffic-for-full-visibility-and-threat-inspection
+
+Virtual-Systems
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/virtual-systems
+
+Enable virtual systems.
+Select Device>Setup>Management >and edit the General Settings.
+
+Select the Multi Virtual System Capability check box and click OK. This action triggers a commit if you approve it.
+
+Only after enabling virtual systems will the Device tab display the Virtual Systems and Shared Gateways options.
+
+Create a virtual system.
+
+Select DeviceVirtual Systems, click Add and enter a virtual system ID, which is appended to “vsys” (range is 1-255).
+
+The default is vsys1. You cannot delete vsys1 because it is relevant to the internal hierarchy on the firewall;
+ vsys1 appears even on firewall models that don’t support multiple virtual systems.
+
+
+Select Allow forwarding of decrypted content if you want to allow the firewall 
+to forward decrypted content to an outside service. For example, you must enable 
+this option for the firewall to be able to send decrypted content to WildFire for analysis.
+
+Enter a descriptive Name for the virtual system. 
+A maximum of 31 alphanumeric, space,
+ and underscore characters is allowed.
+
+Assign interfaces to the virtual system.
+
+The virtual routers, virtual wires, 
+or VLANs can either be configured already or you can configure them 
+later, at which point you specify the virtual system associated with each.
+
+On the General tab, select a DNS Proxy object 
+if you want to apply DNS proxy rules to the interface.
+
+In the Interfaces field, click 
+Add to enter the interfaces or subinterfaces to assign to the virtual system.
+ An interface can belong to only one virtual system.
+
+Do any of the following, based on the deployment
+type(s) you need in the virtual system:
+
+In the VLANs field, click 
+Add to enter the VLAN(s) to assign to the vsys.
+
+In the Virtual Wires field, 
+click Add to enter the virtual wire(s)
+ to assign to the vsys.
+
+In the Virtual Routers field, 
+click Add to enter the virtual router(s) to assign to the vsys.
+
+In the Visible Virtual System field, 
+check all virtual systems that should be made visible 
+to the virtual system being configured. This is required
+ for virtual systems that need to communicate with each other.
+
+In a multi-tenancy scenario where strict administrative boundaries 
+are required, no virtual systems would be checked.
+
+
+Click OK.
+
+
+---------------Configure Inter-Virtual System Communication within the Firewall---------------
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/virtual-systems/configure-inter-virtual-system-communication-within-the-firewall
+Configure an external zone for each virtual system.
+
+Select NetworkZones and Add a new zone by Name.
+
+For Location, select the virtual system 
+for which you are creating an external zone.
+
+For Type, select External.
+
+For Virtual Systems, click Add 
+and enter the virtual system that the
+ external zone can reach.
+
+(Optional) Select a Zone Protection Profile
+ (or configure one later) that provides flood, 
+ reconnaissance, or packet-based attack protection.
+ 
+(Optional) In Log Setting, select a log forwarding profile 
+for forwarding zone protection logs to an external system.
+
+(Optional) Select Enable User Identification to enable User-ID for the external zone.
+
+Click OK.
+
+Configure the Security policy 
+ rules to allow or deny traffic 
+ from the internal zones to the 
+ external zone of the virtual system, 
+ and vice versa.
+
+See Create a Security Policy Rule.
+
+See Inter-VSYS Traffic That
+ Remains Within the Firewall.
+
+Commit your changes.
+
+Click Commit.
+
+
+
+
+
+
+
+
+1.) ----------------Config interfaces------------------------------------------------
+
+Configure Layer 3 Interfaces
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/networking/configure-interfaces/layer-3-interfaces/configure-layer-3-interfaces#iddc65fa08-60b8-47b2-a695-2e546b4615e9
+ if a tunnel is used for routing or if tunnel monitoring is turned on,
+ the tunnel needs an IP address. Before performing the following task, 
+ define one or more Virtual Routers.
+ 
+ You would typically use the following procedure
+ to configure an external interface 
+ that connects to the internet 
+ and an interface for your internal network. 
+ 
+ 
+ 
+ Select an interface and configure it with a security zone.
+ 
+Select NetworkInterfaces and either Ethernet, VLAN, loopback, or Tunnel,
+ depending on what type of interface you want.
+ 
+Select the interface to configure.
+
+Select the Interface Type—Layer3.
+
+On the Config tab, for Virtual Router, 
+select the virtual router you are configuring,
+ such as default.
+
+For Virtual System, select the virtual
+ system you are configuring if on a multi-virtual
+ system firewall.
+
+For Security Zone,
+ select the zone to 
+ which the interface belongs
+ or create a New Zone.
+
+Click OK.
+
+Configure the interface 
+with an IPv4 address.
+
+You can assign an IPv4 address
+ to a Layer 3 interface in one of three ways:
+
+Static-
+
+DHCP Client
+—The firewall interface acts as a DHCP client 
+and receives a dynamically assigned IP address. 
+The firewall also provides the capability to propagate 
+settings received by the DHCP client interface into a DHCP 
+server operating on the firewall. This is most commonly 
+used to propagate DNS server settings from an Internet service 
+provider to client machines operating on the network protected
+ by the firewall.
+ 
+PPPoE
+—Configure the interface as a 
+Point-to-Point Protocol over Ethernet (PPPoE) 
+termination point to support connectivity in a 
+Digital Subscriber Line (DSL) environment where 
+there is a DSL modem but no other PPPoE device to 
+terminate the connection.
+
+SETUP:
+>Select Network>Interfaces> and either Ethernet,
+ VLAN, loopback, or Tunnel, 
+ depending on what type of interface you want.
+
+>Select the interface to configure.
+
+>To configure the interface with a 
+static IPv4 address, on the IPv4 tab, 
+set Type to Static.
+
+>Add a Name and optional 
+Description for the address.
+
+>For Type, select one of the following:
+
+>IP Netmask—Enter the IP address and 
+network mask to assign to the interface,
+ for example, 208.80.56.100/24.
+
+>If you’re using a /31 subnet mask for the Layer 3 
+interface address, the interface must be configured with 
+the .1/31 address in order for utilities such as ping 
+to work properly.
+
+>If you’re configuring a loopback interface 
+with an IPv4 address, it must have a /32 subnet mask; 
+for example, 192.168.2.1/32.
+
+>IP Range—Enter an IP address range, 
+such as 192.168.2.1-192.168.2.4.
+
+>FQDN—Enter a Fully Qualified Domain Name.
+
+>Select Tags to apply to the address.
+
+>Click OK.
+
+>Configure an interface with Point-to-Point Protocol 
+over Ethernet (PPPoE). See Layer 3 Interfaces.
+
+-PPPoE is not supported in HA active/active mode.-
+
+>Select NetworkInterfaces and 
+either Ethernet, VLAN, loopback, or Tunnel.
+
+>Select the interface to configure.
+
+>On the IPv4 tab, set Type to PPPoE.
+
+>On the General tab, select Enable 
+to activate the interface for
+ PPPoE termination.
+
+>Enter the Username for 
+the point-to-point connection.
+
+>Enter the Password for the
+ username and Confirm Password.
+
+>Click OK.
+
+>Configure an Interface as a 
+DHCP Client so that it receives 
+a dynamically-assigned IPv4 address.
+
+Set Up Network Access for External Services
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/integrate-the-firewall-into-your-management-network/set-up-network-access-for-external-services
+Register the Firewall
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/register-the-firewall
+
+Segment Your Network Using Interfaces and Zones
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones
+
+Network Segmentation for a Reduced Attack Surface
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones/network-segmentation-for-a-reduced-attack-surface#idf13795cf-8fe2-4f90-acb8-1429269ee07d
+
+Configure Interfaces and Zones
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones/configure-interfaces-and-zones#idd5f608e0-6f9f-4438-8526-23d34d00b01a
+Configure a default route to your Internet router.
+
+Select Network>Virtual Router>
+ and then select the default link 
+ to open the Virtual Router dialog.
+
+Select the Static Routes tab and click Add. 
+Enter a Name for the route and enter the route in the Destination field
+ (for example, 0.0.0.0/0).
+ 
+Select the IP Address radio button 
+in the Next Hop field and then enter
+ the IP address and netmask for your 
+ Internet gateway (for example, 203.0.113.1).
+
+Click OK twice to save the virtual router configuration.
+
+Configure the external interface (the interface that connects to the Internet).
+
+Select Network>Interfaces and then select the interface
+ you want to configure. In this example, 
+ we are configuring Ethernet1/8 as the external interface.
+ 
+Select the Interface Type. 
+ Although your choice here 
+ depends on interface topology,
+ this example shows the steps for Layer3.
+ 
+On the Config tab, select New Zone from the 
+ Security Zone drop-down. In the Zone dialog, 
+ define a Name for new zone, for example Internet,
+ and then click OK.
+
+In the Virtual Router drop-down, select default.
+
+To assign an IP address to the interface,
+ select the IPv4 tab, 
+ click Add in the IP section, 
+ and enter the IP address and network mask 
+ to assign to the interface, for example 203.0.113.23/24.
+
+To enable you to ping the interface, 
+ select Advanced>Other Info, expand the 
+ Management Profile drop-down, 
+ and select New Management Profile.
+ Enter a Name for the profile, select Ping
+ and then click OK.
+ 
+To save the interface configuration, click OK.
+
+Configure the interface that 
+ connects to your internal network.
+
+In this example, the interface connects 
+ to a network segment that uses private IP addresses. 
+ Because private IP addresses cannot be routed externally, 
+ 
+ you have to configure NAT.
+
+Select Network>Interfaces 
+ and select the interface you want to configure. 
+ In this example, we are configuring Ethernet1/15 
+ as the internal interface our users connect to.
+
+Select Layer3 as the Interface Type.
+
+On the Config tab, expand the Security Zone
+ drop-down and select New Zone. In the Zone dialog,
+ define a Name for new zone, for example Users, 
+ and then click OK.
+
+Select the same Virtual Router
+ you used previously, 
+ default in this example.
+
+To assign an IP address to the interface, 
+ select the IPv4 tab, 
+ click Add in the IP section, 
+ and enter the IP address and network mask 
+ to assign to the interface, for example 192.168.1.4/24.
+ 
+To enable you to ping the interface, 
+ select the management profile 
+ that you just created.
+
+To save the interface configuration,
+ click OK.
+ 
+Configure the interface that connects 
+to your data center applications.
+
+Make sure you define granular zones to 
+prevent unauthorized access to sensitive 
+applications or data and eliminate the
+possibility of malware moving laterally 
+within your data center.
+Select the interface you want to configure.
+
+Select Layer3 from the Interface Type drop-down.
+ In this example, we are configuring Ethernet1/1 
+ as the interface that provides access to your 
+ data center applications.
+ 
+On the Config tab, 
+ expand the Security Zone drop-down 
+ and select New Zone. In the Zone dialog, 
+ define a Name for new zone, 
+ for example Data Center Applications, 
+ and then click OK.
+ 
+Select the same Virtual Router you used previously,
+ default in this example.
+ 
+To assign an IP address to the interface, 
+select the IPv4 tab, click Add in the IP section,
+ and enter the IP address and network mask to assign
+ to the interface, for example 10.1.1.1/24.
+ 
+To enable you to ping the interface, 
+select the management profile that you created.
+
+To save the interface configuration, click OK.
+
+(Optional) Create tags for each zone.
+  Tags allow you to visually scan policy rules.
+  Select ObjectsTags and Add.
+  Select a zone Name.
+  Select a tag Color and click OK.
+
+Save the interface configuration.
+
+Click Commit.
+
+Cable the firewall.
+
+Attach straight through cables from the interfaces you configured 
+to the corresponding switch or router on each network segment.
+
+Verify that the interfaces are active.
+
+Select Dashboard and verify that the interfaces you configured show as green in the Interfaces widget.
+
+
+
+
+
+-----------------Set Up a Basic Security Policy--------------------------------------------------------------------
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/set-up-a-basic-security-policy
+
+(Optional) Delete the default Security policy rule.
+
+By default, the firewall includes a Security policy rule
+ named rule1 that allows all traffic from Trust zone to Untrust zone.
+ You can either delete the rule or modify the rule to reflect your 
+ zone-naming conventions.
+ 
+Allow access to your network infrastructure resources.
+
+Select Policies>Security and click Add.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to IT Infrastructure.
+
+(Optional) Delete the default Security policy rule.
+
+By default, the firewall includes a Security policy rule named rule1 
+that allows all traffic from Trust zone to Untrust zone. You can either delete the rule
+ or modify the rule to reflect your zone-naming conventions.
+ 
+Allow access to your network infrastructure resources.
+
+Select PoliciesSecurity and click Add.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to IT Infrastructure.
+
+Select PoliciesSecurity and Add a rule.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to Internet.
+
+In the Applications tab, Add an Application Filter and enter a Name. 
+To safely enable access to legitimate web-based applications, set the Category 
+in the application filter to general-internet and then click OK. To enable access 
+to encrypted sites, Add the ssl application.
+
+In the Service/URL Category tab, keep the Service set to application-default.
+
+In the Actions tab, set the Action Setting to Allow.
+
+Set Profile Type to Profiles and select the following security profiles to attach to the policy rule:
+
+For Antivirus, select default
+
+For Vulnerability Protection, select strict
+
+For Anti-Spyware, select strict
+
+For URL Filtering, select default
+
+For File Blocking, select strict file blocking
+
+For WildFire Analysis, select default
+
+Verify that Log at Session End is enabled. Only traffic that matches a security rule will be logged.
+
+Click OK.
+
+Select PoliciesSecurity and Add a rule.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to Internet.
+
+In the Applications tab, Add an Application Filter and enter a Name. 
+ To safely enable access to legitimate web-based applications, 
+ set the Category in the application filter to general-internet and then click OK. 
+ To enable access to encrypted sites, Add the ssl application.
+
+In the Service/URL Category tab, 
+ keep the Service set to application-default.
+
+ In the Actions tab, set the Action Setting to Allow.
+
+Set Profile Type to Profiles and select the 
+ following security profiles to attach to the policy rule:
+
+For Antivirus, select default
+
+For Vulnerability Protection, select strict
+
+For Anti-Spyware, select strict
+
+For URL Filtering, select default
+
+For File Blocking, select strict file blocking
+
+For WildFire Analysis, select default
+
+Verify that Log at Session End is enabled. 
+ Only traffic that matches a security rule will be logged.
+
+Click OK.
+
+Save your policy rules to the running configuration on the firewall.
+
+Click Commit.
+
+To verify that you have set up your basic policies effectively, 
+ test whether your Security policy rules are being evaluated and determine
+ which Security policy rule applies to a traffic flow.
+ 
+For example, to verify the policy rule that will be applied for 
+a client in the user zone with the IP address 10.35.14.150 
+when it sends a DNS query to the DNS server in the data center:
+
+Select DeviceTroubleshooting a
+nd select Security Policy Match (Select Test).
+
+Enter the Source and Destination IP addresses.
+
+Enter the Protocol.
+
+Select dns (Application)
+
+Execute the Security policy match test.

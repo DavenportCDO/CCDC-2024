@@ -1,0 +1,62 @@
+Virtual-Systems
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/virtual-systems
+
+Enable virtual systems.
+Select Device>Setup>Management >and edit the General Settings.
+
+Select the Multi Virtual System Capability check box and click OK. This action triggers a commit if you approve it.
+
+Only after enabling virtual systems will the Device tab display the Virtual Systems and Shared Gateways options.
+
+Create a virtual system.
+
+Select DeviceVirtual Systems, click Add and enter a virtual system ID, which is appended to “vsys” (range is 1-255).
+
+The default is vsys1. You cannot delete vsys1 because it is relevant to the internal hierarchy on the firewall;
+ vsys1 appears even on firewall models that don’t support multiple virtual systems.
+
+
+Select Allow forwarding of decrypted content if you want to allow the firewall 
+to forward decrypted content to an outside service. For example, you must enable 
+this option for the firewall to be able to send decrypted content to WildFire for analysis.
+
+Enter a descriptive Name for the virtual system. 
+A maximum of 31 alphanumeric, space,
+ and underscore characters is allowed.
+
+Assign interfaces to the virtual system.
+
+The virtual routers, virtual wires, 
+or VLANs can either be configured already or you can configure them 
+later, at which point you specify the virtual system associated with each.
+
+On the General tab, select a DNS Proxy object 
+if you want to apply DNS proxy rules to the interface.
+
+In the Interfaces field, click 
+Add to enter the interfaces or subinterfaces to assign to the virtual system.
+ An interface can belong to only one virtual system.
+
+Do any of the following, based on the deployment
+type(s) you need in the virtual system:
+
+In the VLANs field, click 
+Add to enter the VLAN(s) to assign to the vsys.
+
+In the Virtual Wires field, 
+click Add to enter the virtual wire(s)
+ to assign to the vsys.
+
+In the Virtual Routers field, 
+click Add to enter the virtual router(s) to assign to the vsys.
+
+In the Visible Virtual System field, 
+check all virtual systems that should be made visible 
+to the virtual system being configured. This is required
+ for virtual systems that need to communicate with each other.
+
+In a multi-tenancy scenario where strict administrative boundaries 
+are required, no virtual systems would be checked.
+
+
+Click OK.

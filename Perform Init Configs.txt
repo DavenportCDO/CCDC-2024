@@ -1,0 +1,197 @@
+Perform Initial Configuration
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/integrate-the-firewall-into-your-management-network/perform-initial-configuration
+
+
+By default, the PA-Series firewall has an IP address of 192.168.1.1 
+and a username/password of admin/admin. For security reasons, 
+you must change these settings before continuing with other firewall configuration tasks.
+ You must perform these initial configuration tasks either from the MGT interface, 
+ even if you do not plan to use this interface for your firewall management, or using a
+ direct serial connection to the console port on the firewall.
+ 
+ 
+Install your firewall and connect power to it.
+
+If your firewall model has dual power supplies,
+ connect the second power supply for redundancy.
+ Refer to the hardware reference guide for your model for details.
+ 
+Gather the required information from your network administrator.
+
+IP address for MGT port
+
+Netmask
+
+Default gateway
+
+DNS server address
+
+Connect your computer to the firewall.
+
+You can connect to the firewall in one of the following ways:
+
+Connect a serial cable from your computer to the 
+Console port and connect to the firewall using terminal emulation software 
+(9600-8-N-1). Wait a few minutes for the boot-up sequence to complete; 
+when the firewall is ready, the prompt changes to the name of the firewall, 
+for example PA-220 login.
+
+Connect an RJ-45 Ethernet cable from your computer 
+to the MGT port on the firewall. 
+From a browser, go to https://192.168.1.1.
+
+You may need to change the IP address 
+on your computer to an address in the 192.168.1.0/24 
+network, such as 192.168.1.2, to access this URL.
+
+When prompted, log in to the firewall.
+
+You must log in using the default username and
+password (admin/admin). The firewall will begin to initialize.
+
+Set a secure password for the admin account.
+
+Select DeviceAdministrators.
+
+Select the admin role.
+
+Enter the current default password and the new password.
+
+Configure the MGT interface.
+
+Select DeviceSetupInterfaces and edit the Management interface.
+
+Configure the address settings for the MGT interface 
+using one of the following methods:
+
+	-To configure static IP address settings for the MGT interface,
+	set the IP Type to Static and enter the IP Address, Netmask, and Default Gateway.
+	
+	-To dynamically configure the MGT interface address settings,
+	set the IP Type to DHCP Client. To use this method, you must
+	Configure the Management Interface as a DHCP Client.
+
+Set the Speed to auto-negotiate.
+
+Select which management services to allow on the interface.
+
+Click OK.
+
+Configure DNS, update server, and proxy server settings.
+
+Select DeviceSetupServices.
+
+For multi-virtual system platforms, select Global and edit the Services section.
+
+For single virtual system platforms, edit the Services section.
+
+On the Services tab, for DNS, select one of the following:
+
+Servers—Enter the Primary DNS Server address and Secondary DNS Server address.
+
+DNS Proxy Object—From the drop-down, select the DNS Proxy that you want to use 
+to configure global DNS services, or click DNS Proxy to configure a new DNS proxy object.
+
+Click OK.
+
+Configure date and time (NTP) settings.
+
+Select DeviceSetupServices.
+
+For multi-virtual system platforms, select Global and edit the Services section.
+
+For single virtual system platforms, edit the Services section.
+
+On the NTP tab, to use the virtual cluster
+ of time servers on the Internet,
+ enter the hostname :
+ pool.ntp.org as the
+ Primary NTP Server or enter the IP address 
+ of your primary NTP server.
+ 
+(Optional) Enter a Secondary NTP Server address.
+
+(Optional) To authenticate time updates from the 
+NTP server(s), for Authentication Type, 
+select one of the following for each server:
+
+None—(Default) Disables NTP authentication.
+
+Symmetric Key—Firewall uses symmetric key exchange
+ (shared secrets) to authenticate time updates.
+
+Key ID—Enter the Key ID (1-65534).
+
+Algorithm—Select the algorithm to use in NTP authentication (MD5 or SHA1).
+
+Autokey—Firewall uses autokey (public key cryptography) to authenticate time updates.
+
+Click OK.
+
+(Optional) Configure general firewall settings as needed.
+
+Select DeviceSetupManagement and edit the General Settings.
+
+Enter a Hostname for the firewall and enter your network Domain name. 
+The domain name is just a label; it will not be used to join the domain.
+
+Enter Login Banner text that informs users who are about to log in that 
+they require authorization to access the firewall management functions.
+
+Enter the Latitude and Longitude to enable accurate placement of the firewall on the world map.
+Click OK.
+Commit your changes.
+
+Connect the firewall to your network.
+
+Disconnect the firewall from your computer.
+
+(All firewalls except for the PA-5450) 
+ Connect the MGT port to a switch port 
+ on your management network using an RJ-45 Ethernet cable.
+ Make sure that the switch port you cable the firewall 
+ to is configured for auto-negotiation.
+ 
+(PA-5450 only) Connect the MGT port to 
+ a switch port on your management network
+ using a Palo Alto Networks certified SFP/SFP+ 
+ transceiver and cable.
+ 
+Open an SSH management session to the firewall.
+
+Using a terminal emulation software, 
+such as PuTTY, launch an SSH session 
+to the firewall using the new IP address 
+you assigned to it.
+
+Verify network access to external 
+services required for firewall management, 
+such as the Palo Alto Networks Update Server.
+
+You can do this in one of the following ways:
+
+If you do not want to allow external network access to the MGT interface, 
+you will need to set up a data port to retrieve required service updates.
+ Continue to Set Up Network Access for External Services.
+ 
+If you do plan to allow external network access to the MGT interface,
+ verify that you have connectivity and then proceed to 
+ Register the Firewall and Activate Subscription Licenses.
+ 
+Use update server connectivity test to 
+verify network connectivity to the Palo Alto Networks Update server
+
+Select DeviceTroubleshooting, and select Update Server Connectivity from the Select Test drop-down.
+
+Execute the update server connectivity test.
+
+Use the following CLI command to retrieve information 
+on the support entitlement for the firewall from the Palo Alto Networks update server:
+
+request support
+
+check 
+
+If you have connectivity, the update server will respond with the support status for your firewall.
+ If your firewall is not yet registered, the update server returns the following message:
+

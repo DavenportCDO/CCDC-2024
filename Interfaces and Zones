@@ -1,0 +1,160 @@
+
+
+
+Set Up Network Access for External Services
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/integrate-the-firewall-into-your-management-network/set-up-network-access-for-external-services
+Register the Firewall
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/register-the-firewall
+
+Segment Your Network Using Interfaces and Zones
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones
+
+Network Segmentation for a Reduced Attack Surface
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones/network-segmentation-for-a-reduced-attack-surface#idf13795cf-8fe2-4f90-acb8-1429269ee07d
+
+
+
+
+Configure Interfaces and Zones
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/segment-your-network-using-interfaces-and-zones/configure-interfaces-and-zones#idd5f608e0-6f9f-4438-8526-23d34d00b01a
+Configure a default route to your Internet router.
+
+Select Network>Virtual Router>
+ and then select the default link 
+ to open the Virtual Router dialog.
+
+Select the Static Routes tab and click Add. 
+Enter a Name for the route and enter the route in the Destination field
+ (for example, 0.0.0.0/0).
+ 
+Select the IP Address radio button 
+in the Next Hop field and then enter
+ the IP address and netmask for your 
+ Internet gateway (for example, 203.0.113.1).
+
+Click OK twice to save the virtual router configuration.
+
+Configure the external interface (the interface that connects to the Internet).
+
+Select Network>Interfaces and then select the interface
+ you want to configure. In this example, 
+ we are configuring Ethernet1/8 as the external interface.
+ 
+Select the Interface Type. 
+ Although your choice here 
+ depends on interface topology,
+ this example shows the steps for Layer3.
+ 
+On the Config tab, select New Zone from the 
+ Security Zone drop-down. In the Zone dialog, 
+ define a Name for new zone, for example Internet,
+ and then click OK.
+
+In the Virtual Router drop-down, select default.
+
+To assign an IP address to the interface,
+ select the IPv4 tab, 
+ click Add in the IP section, 
+ and enter the IP address and network mask 
+ to assign to the interface, for example 203.0.113.23/24.
+
+To enable you to ping the interface, 
+ select Advanced>Other Info, expand the 
+ Management Profile drop-down, 
+ and select New Management Profile.
+ Enter a Name for the profile, select Ping
+ and then click OK.
+ 
+To save the interface configuration, click OK.
+
+Configure the interface that 
+ connects to your internal network.
+
+In this example, the interface connects 
+ to a network segment that uses private IP addresses. 
+ Because private IP addresses cannot be routed externally, 
+ 
+ you have to configure NAT.
+
+Select Network>Interfaces 
+ and select the interface you want to configure. 
+ In this example, we are configuring Ethernet1/15 
+ as the internal interface our users connect to.
+
+Select Layer3 as the Interface Type.
+
+On the Config tab, expand the Security Zone
+ drop-down and select New Zone. In the Zone dialog,
+ define a Name for new zone, for example Users, 
+ and then click OK.
+
+Select the same Virtual Router
+ you used previously, 
+ default in this example.
+
+To assign an IP address to the interface, 
+ select the IPv4 tab, 
+ click Add in the IP section, 
+ and enter the IP address and network mask 
+ to assign to the interface, for example 192.168.1.4/24.
+ 
+To enable you to ping the interface, 
+ select the management profile 
+ that you just created.
+
+To save the interface configuration,
+ click OK.
+ 
+Configure the interface that connects 
+to your data center applications.
+
+Make sure you define granular zones to 
+prevent unauthorized access to sensitive 
+applications or data and eliminate the
+possibility of malware moving laterally 
+within your data center.
+Select the interface you want to configure.
+
+Select Layer3 from the Interface Type drop-down.
+ In this example, we are configuring Ethernet1/1 
+ as the interface that provides access to your 
+ data center applications.
+ 
+On the Config tab, 
+ expand the Security Zone drop-down 
+ and select New Zone. In the Zone dialog, 
+ define a Name for new zone, 
+ for example Data Center Applications, 
+ and then click OK.
+ 
+Select the same Virtual Router you used previously,
+ default in this example.
+ 
+To assign an IP address to the interface, 
+select the IPv4 tab, click Add in the IP section,
+ and enter the IP address and network mask to assign
+ to the interface, for example 10.1.1.1/24.
+ 
+To enable you to ping the interface, 
+select the management profile that you created.
+
+To save the interface configuration, click OK.
+
+(Optional) Create tags for each zone.
+  Tags allow you to visually scan policy rules.
+  Select ObjectsTags and Add.
+  Select a zone Name.
+  Select a tag Color and click OK.
+
+Save the interface configuration.
+
+Click Commit.
+
+Cable the firewall.
+
+Attach straight through cables from the interfaces you configured 
+to the corresponding switch or router on each network segment.
+
+Verify that the interfaces are active.
+
+Select Dashboard and verify that the interfaces you configured show as green in the Interfaces widget.
