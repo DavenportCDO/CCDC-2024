@@ -1,0 +1,40 @@
+---------------Configure Inter-Virtual System Communication within the Firewall---------------
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/virtual-systems/configure-inter-virtual-system-communication-within-the-firewall
+Configure an external zone for each virtual system.
+
+Select NetworkZones and Add a new zone by Name.
+
+For Location, select the virtual system 
+for which you are creating an external zone.
+
+For Type, select External.
+
+For Virtual Systems, click Add 
+and enter the virtual system that the
+ external zone can reach.
+
+(Optional) Select a Zone Protection Profile
+ (or configure one later) that provides flood, 
+ reconnaissance, or packet-based attack protection.
+ 
+(Optional) In Log Setting, select a log forwarding profile 
+for forwarding zone protection logs to an external system.
+
+(Optional) Select Enable User Identification to enable User-ID for the external zone.
+
+Click OK.
+
+Configure the Security policy 
+ rules to allow or deny traffic 
+ from the internal zones to the 
+ external zone of the virtual system, 
+ and vice versa.
+
+See Create a Security Policy Rule.
+
+See Inter-VSYS Traffic That
+ Remains Within the Firewall.
+
+Commit your changes.
+
+Click Commit.

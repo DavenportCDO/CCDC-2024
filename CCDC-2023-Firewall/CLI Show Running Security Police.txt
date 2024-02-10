@@ -1,0 +1,123 @@
+"PUBLIC2EXTERNAL; index 1" {
+	from Public;
+	source any;
+	source-region none;
+	to External;
+	destination any;
+	destination-region none;
+	user any;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service 0: any/any/any/any;
+	action allow;
+	icmp-unreachable: no
+	terminal yes;
+}
+
+"PUBLIC2INTERNAL; index 1" {
+	from Public;
+	source any;
+	source-region none;
+	to Internal;
+	destination any;
+	destination-region none;
+	user any;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service 0: any/any/any/any;
+	action allow;
+	icmp-unreachable: no
+	terminal yes;
+}
+
+"INTERNAL2PUBLIC; index 3" {
+	from Internal;
+	source any;
+	source-region none;
+	to Public;
+	destination any;
+	destination-region none;
+	user any;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service 0: any/any/any/any;
+	action allow;
+	icmp-unreachable: no
+	terminal yes;
+}
+
+"any2any; index 4" {
+	from any
+	
+	;
+	source any;
+	source-region none;
+	to Public;
+	destination any;
+	destination-region none;
+	user any;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service 0: any/any/any/any;
+	action allow;
+	icmp-unreachable: no
+	terminal yes;
+}
+
+"allow 80; index 5" {
+	from [ Public Internal User ];
+	source any;
+	source-region none;
+	to [ Public Internal User ];
+	destination any;
+	destination-region none;
+	user any;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service [ 0:any/tcp/any/80 1:any/tcp/any/8080 ];
+	action allow;
+	icmp-unreachable: no
+	terminal yes;
+}
+
+"intrazone-default; index 6" {
+	from any;
+	source any;
+	source-region none;
+	to any;
+	destination any;
+	destination-region none;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service 0:any/any/any/any;
+	action allow;
+	icmp-unreachable: no
+	terminal yes;
+	type intrazone;
+}
+
+"interzone-default; index 7" {
+	from any;
+	source any;
+	source-region none;
+	to any;
+	destination any;
+	destination-region none;
+	source-device any;
+	destination-device any;
+	category any;
+	application/service 0:any/any/any/any;
+	action deny;
+	icmp-unreachable: no
+	terminal yes;
+	type interzone;
+}
+
+dynamic url: no
+

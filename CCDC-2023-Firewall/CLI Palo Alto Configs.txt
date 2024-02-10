@@ -1,0 +1,160 @@
+
+
+------------Cheat-Sheet-CLI-Device-Management------------------
+
+
+show system info             				--- Show general system health information.
+show system disk-space files 				--- Show percent usage of disk partitions. Include the optional files parameter to show information about inodes, which track file storage.
+show system logdb-quota						--- Show the maximum log file size.
+show system software status					--- Show running processes.
+show system resources						--- Show processes running in the management plane.
+Show the licenses installed on the device   --- Show resource utilization in the dataplane.
+request license info						--- Show the licenses installed on the device.
+show jobs processed							--- Show when commits, downloads, and/or upgrades are completed.
+show session info							---	Show session information.
+show session id <session-id>				---	Show information about a specific session.
+show running security-policy				--- Show the running security policy.
+less mp-log authd.log						--- Show the authentication logs.
+request restart system						--- Restart the device.
+show admins									--- Show the administrators who are currently logged in to the web interface, CLI, or API.
+show admins all								--- Show the administrators who can access the web interface, CLI, or API, regardless of whether those administrators are currently logged in.
+												When you run this command on the firewall, the output includes local administrators, remote administrators, and all administrators pushed from a Panorama template. Remote administrators are listed regardless of when they last logged in
+set deviceconfig system type dhcp-client   |--- Configure the management interface as a DHCP client.
+	accept-dhcp-domain <yes|no> 		   |---
+		accept-dhcp-hostname <yes|no>      |--- For a successful commit, you must include each of the parameters: 
+			send-client-id <yes|no> 	   |--- accept-dhcp-domain, accept-dhcp-hostname, send-client-id, and send-hostname.
+				send-hostname <yes|no>	   |
+				
+				
+------------Cheat-Sheet-CLI-User-ID-Management-------------
+show user user-id-agent state all					 --- To see all configured Windows-based agents
+show user server-monitor state all					 --- To see if the PAN-OS-integrated agent is configured
+show user server-monitor statistics					 --- View the configuration of a User-ID agent from the Palo Alto Networks device
+show user user-id-agent config name <agent-name>     --- View the configuration of a User-ID agent from the Palo Alto Networks device
+
+> show user group-mapping statistics  				|--- View group mapping information
+> show user group-mapping state all 				|
+> show user group list 								|
+> show user group name <group-name> 				| 
+
+----------------Find a user mapping based on an email address:------------
+
+show user ip-user-mapping all													--- View all user mappings on the Palo Alto Networks device:
+show user ip-user-mapping all | match <domain>\\<username-string>				--- Show user mappings filtered by a username string (if the string includes the domain name, use two backslashes before the username):
+show user ip-user-mapping ip <ip-address>										--- Show user mappings for a specific IP address:
+show user user-ids 																--- Show usernames:
+show log userid datasourcename equal <agent-name> direction equal backward  	--- View the most recent addresses learned from a particular User-ID agent:
+show log userid datasourcetype equal <authentication-service>					--- View mappings from a particular type of authentication service:
+show log userid datasourcetype equal kerberos									--- where <authentication-service> can be authenticate, client-cert, directory-server, exchange-server, globalprotect, kerberos, netbios-probing, ntlm, unknown, vpn-client, or wmi-probing.
+																					|For example, to view all user mappings from the Kerberos server, you would enter the following command:
+show log userid datasource equal <datasource>									--- View mappings learned using a particular type of user mapping:
+show log userid datasourcetype equal xml-api									--- where <datasource> can be agent, captive-portal, event-log, ha, probing, server-session-monitor, ts-agent, unknown, vpn-client, or xml-api.
+																					|For example, to view all user mappings from the XML API, you would enter the following command:
+
+
+> show user email-lookup 														--- Find a user mapping based on an email address:
++ base               Default base distinguished name (DN) to use for searches 	|
++ bind-dn            bind distinguished name 									|
++ bind-password      bind password 												|
++ domain             Domain name to be used for username 						|
++ group-object       group object class(comma-separated) 						|
++ name-attribute     name attribute 											|
++ proxy-agent        agent ip or host name. 									|
++ proxy-agent-port   user-id agent listening port, default is 5007 				|
++ use-ssl            use-ssl 													|
+* email              email address 												|
+> mail-attribute     mail attribute 											|
+> server             ldap server ip or host name. 								|
+> server-port        ldap server listening port 								|
+																				|
+For example:																	|
+> show user email-lookup base "DC=lab,DC=sg,DC=acme,DC=local" 					|
+	bind-dn "CN=Administrator,CN=Users,DC=lab,DC=sg,DC=acme,DC=local" 			|
+		bind-password acme use-ssl no email user1@lab.sg.acme.local mail-attribute 
+			mail server 10.1.1.1 server-port 389 labsg\user1 					|
+			
+clear user-cache all						--- Clear the User-ID cache:
+clear user-cache ip <ip-address/netmask>	--- Clear a User-ID mapping for a specific IP address:
+
+
+	------------Cheat-Sheet-CLI-Networking-Management-------------
+---General
+> show routing route											---	Display the routing table
+> show routing fib virtual-router <name> | match <x.x.x.x/Y>	--- Look at routes for a specific destination
+> set system setting arp-cache-timeout <60-65536>				--- Change the ARP cache timeout setting from the default of 1800 seconds.
+> show system setting arp-cache-timeout							--- View the ARP cache timeout setting.
+---NAT															
+> show running nat-policy										--- Show the NAT policy table
+> test nat-policy-match											--- Test the NAT policy
+> show running ippool 											--- |Show NAT pool utilization
+> show running global-ippool 										|
+
+---IPSec														
+> show vpn flow													--- Show IPSec counters
+> show vpn gateway												--- Show a list of all IPSec gateways and their configurations
+> show vpn ike-sa												--- Show IKE phase 1 SAs
+> show vpn ipsec-sa												--- Show IKE phase 2 SAs
+> show vpn tunnel												--- Show a list of auto-key IPSec tunnel configurations
+
+---BFD															
+> show routing bfd active-profile [<name>]						--- Show BFD profiles
+> show routing bfd details [interface <name>] 					--- Show BFD details
+	[local-ip <ip>] [multihop][peer-ip <ip>] 					   |
+			[session-id] [virtual-router <name>] 				   |
+			
+> show routing bfd drop-counters session-id <session-id>		--- Show BFD statistics on dropped sessions
+> show counter global | match bfd								--- Show counters of transmitted, received, and dropped BFD packets
+> clear routing bfd counters session-id all | <1-1024>			--- Clear counters of transmitted, received, and dropped BFD packets
+> clear routing bfd session-state session-id all | <1-1024>		--- Clear BFD sessions for debugging purposes
+
+---PVST+														
+> set session pvst-native-vlan-id <vid>								--- Set the native VLAN ID
+> set session drop-stp-packet										--- Drop all STP BPDU packets
+> show vlan all														---	Verify PVST+ BPDU rewrite configuration, native VLAN ID, and STP BPDU packet drop
+> show counter global												--- Show counter of times the 802.1Q tag and PVID fields in a PVST+ BPDU packet do not match
+
+---Troubleshooting:
+> ping host <destination-ip-address>									--- Ping from the management (MGT) interface to a destination IP address
+> ping source <ip-address-on-dataplane> host <destination-ip-address>	--- Ping from a dataplane interface to a destination IP address
+> show netstat statistics yes											---	Show network statistics		
+
+
+	------------Cheat-Sheet-CLI-Vsys-Management-------------
+show system info | match vsys 				 --- Find out if the firewall is in multi-vsys mode
+set system setting target-vsys ? 			 --- View a list of virtual systems configured on the firewall
+set system setting target-vsys <vsys-name> 	 --- Switch to a particular vsys so that you can issue commands and view data specific to that vsys
+set system setting target-vsys vsys2		 --- For example, use the following command to switch to vsys2; note that the vsys name is case sensitive:
+show session meter							 --- View the maximum number of sessions allowed, in use, and throttled
+show user ip-user-mapping all				 --- View the User-ID mappings in the vsys
+set system setting target-vsys none 		 --- set system setting target-vsys none 
+
+	------------Cheat-Sheet-CLI-Panorama-Management-------------
+>show system info | match system-mode		---		Display the current operational mode.
+>request system system-mode logger			---		Switch from Panorama mode to Log Collector mode.
+>request system system-mode panurldb		---		Switch from Panorama mode to PAN-DB private cloud mode (M-500 appliance only).
+>request system system-mode panorama		---		Switch an M-Series appliance from Log Collector mode or PAN-DB private cloud mode (M-500 appliance only) to Panorama mode.
+>request system system-mode panorama		---		Switch the Panorama virtual appliance from Legacy mode to Panorama mode.
+>request system system-mode legacy			---		Switch the Panorama virtual appliance from Panorama mode to Legacy mode.
+
+>set cli config-output-mode set				---		Change the output for show commands to a format that you can run as CLI commands.
+>set panorama [off | on]
+>request high-availability sync-to-remote [running-config | candidate-config]
+>request batch reboot [devices | log-collectors]   
+									<serial-number>
+>set dlsrvr poll-interval
+								<5-60>
+>show devicegroups name
+								<device-group-name>
+>show templates name
+								<template-name>
+>show config pushed-shared-policy
+>show config pushed-template
+>debug log-collector log-collection-stats show incoming-logs
+>debug log-collector log-collection-stats show log-forwarding-stats		
+>show logging-status device
+									<firewall-serial-number>
+>clear log [acc | alarm | config | hipmatch | system]							
+			
+
+		
+			

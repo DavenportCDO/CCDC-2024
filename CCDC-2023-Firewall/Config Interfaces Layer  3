@@ -1,0 +1,129 @@
+1.) ----------------Config interfaces------------------------------------------------
+Configure Layer 3 Interfaces
+https://docs.paloaltonetworks.com/pan-os/9-1/pan-os-admin/networking/configure-interfaces/layer-3-interfaces/configure-layer-3-interfaces#iddc65fa08-60b8-47b2-a695-2e546b4615e9
+ if a tunnel is used for routing or if tunnel monitoring is turned on,
+ the tunnel needs an IP address. Before performing the following task, 
+ define one or more Virtual Routers.
+ 
+ You would typically use the following procedure
+ to configure an external interface 
+ that connects to the internet 
+ and an interface for your internal network. 
+ 
+ 
+ 
+ Select an interface and configure it with a security zone.
+ 
+Select NetworkInterfaces and either Ethernet, VLAN, loopback, or Tunnel,
+ depending on what type of interface you want.
+ 
+Select the interface to configure.
+
+Select the Interface Type—Layer3.
+
+On the Config tab, for Virtual Router, 
+select the virtual router you are configuring,
+ such as default.
+
+For Virtual System, select the virtual
+ system you are configuring if on a multi-virtual
+ system firewall.
+
+For Security Zone,
+ select the zone to 
+ which the interface belongs
+ or create a New Zone.
+
+Click OK.
+
+Configure the interface 
+with an IPv4 address.
+
+You can assign an IPv4 address
+ to a Layer 3 interface in one of three ways:
+
+Static-
+
+DHCP Client
+—The firewall interface acts as a DHCP client 
+and receives a dynamically assigned IP address. 
+The firewall also provides the capability to propagate 
+settings received by the DHCP client interface into a DHCP 
+server operating on the firewall. This is most commonly 
+used to propagate DNS server settings from an Internet service 
+provider to client machines operating on the network protected
+ by the firewall.
+ 
+PPPoE
+—Configure the interface as a 
+Point-to-Point Protocol over Ethernet (PPPoE) 
+termination point to support connectivity in a 
+Digital Subscriber Line (DSL) environment where 
+there is a DSL modem but no other PPPoE device to 
+terminate the connection.
+
+SETUP:
+>Select Network>Interfaces> and either Ethernet,
+ VLAN, loopback, or Tunnel, 
+ depending on what type of interface you want.
+
+>Select the interface to configure.
+
+>To configure the interface with a 
+static IPv4 address, on the IPv4 tab, 
+set Type to Static.
+
+>Add a Name and optional 
+Description for the address.
+
+>For Type, select one of the following:
+
+>IP Netmask—Enter the IP address and 
+network mask to assign to the interface,
+ for example, 208.80.56.100/24.
+
+>If you’re using a /31 subnet mask for the Layer 3 
+interface address, the interface must be configured with 
+the .1/31 address in order for utilities such as ping 
+to work properly.
+
+>If you’re configuring a loopback interface 
+with an IPv4 address, it must have a /32 subnet mask; 
+for example, 192.168.2.1/32.
+
+>IP Range—Enter an IP address range, 
+such as 192.168.2.1-192.168.2.4.
+
+>FQDN—Enter a Fully Qualified Domain Name.
+
+>Select Tags to apply to the address.
+
+>Click OK.
+
+>Configure an interface with Point-to-Point Protocol 
+over Ethernet (PPPoE). See Layer 3 Interfaces.
+
+-PPPoE is not supported in HA active/active mode.-
+
+>Select NetworkInterfaces and 
+either Ethernet, VLAN, loopback, or Tunnel.
+
+>Select the interface to configure.
+
+>On the IPv4 tab, set Type to PPPoE.
+
+>On the General tab, select Enable 
+to activate the interface for
+ PPPoE termination.
+
+>Enter the Username for 
+the point-to-point connection.
+
+>Enter the Password for the
+ username and Confirm Password.
+
+>Click OK.
+
+>Configure an Interface as a 
+DHCP Client so that it receives 
+a dynamically-assigned IPv4 address.

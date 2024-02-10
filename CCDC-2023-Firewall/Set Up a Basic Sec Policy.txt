@@ -1,0 +1,132 @@
+
+-----------------Set Up a Basic Security Policy--------------------------------------------------------------------
+https://docs.paloaltonetworks.com/pan-os/10-1/pan-os-admin/getting-started/set-up-a-basic-security-policy
+
+(Optional) Delete the default Security policy rule.
+
+By default, the firewall includes a Security policy rule
+ named rule1 that allows all traffic from Trust zone to Untrust zone.
+ You can either delete the rule or modify the rule to reflect your 
+ zone-naming conventions.
+ 
+Allow access to your network infrastructure resources.
+
+Select Policies>Security and click Add.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to IT Infrastructure.
+
+(Optional) Delete the default Security policy rule.
+
+By default, the firewall includes a Security policy rule named rule1 
+that allows all traffic from Trust zone to Untrust zone. You can either delete the rule
+ or modify the rule to reflect your zone-naming conventions.
+ 
+Allow access to your network infrastructure resources.
+
+Select PoliciesSecurity and click Add.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to IT Infrastructure.
+
+Select PoliciesSecurity and Add a rule.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to Internet.
+
+In the Applications tab, Add an Application Filter and enter a Name. 
+To safely enable access to legitimate web-based applications, set the Category 
+in the application filter to general-internet and then click OK. To enable access 
+to encrypted sites, Add the ssl application.
+
+In the Service/URL Category tab, keep the Service set to application-default.
+
+In the Actions tab, set the Action Setting to Allow.
+
+Set Profile Type to Profiles and select the following security profiles to attach to the policy rule:
+
+For Antivirus, select default
+
+For Vulnerability Protection, select strict
+
+For Anti-Spyware, select strict
+
+For URL Filtering, select default
+
+For File Blocking, select strict file blocking
+
+For WildFire Analysis, select default
+
+Verify that Log at Session End is enabled. Only traffic that matches a security rule will be logged.
+
+Click OK.
+
+Select PoliciesSecurity and Add a rule.
+
+In the General tab, enter a descriptive Name for the rule.
+
+In the Source tab, set the Source Zone to Users.
+
+In the Destination tab, set the Destination Zone to Internet.
+
+In the Applications tab, Add an Application Filter and enter a Name. 
+ To safely enable access to legitimate web-based applications, 
+ set the Category in the application filter to general-internet and then click OK. 
+ To enable access to encrypted sites, Add the ssl application.
+
+In the Service/URL Category tab, 
+ keep the Service set to application-default.
+
+ In the Actions tab, set the Action Setting to Allow.
+
+Set Profile Type to Profiles and select the 
+ following security profiles to attach to the policy rule:
+
+For Antivirus, select default
+
+For Vulnerability Protection, select strict
+
+For Anti-Spyware, select strict
+
+For URL Filtering, select default
+
+For File Blocking, select strict file blocking
+
+For WildFire Analysis, select default
+
+Verify that Log at Session End is enabled. 
+ Only traffic that matches a security rule will be logged.
+
+Click OK.
+
+Save your policy rules to the running configuration on the firewall.
+
+Click Commit.
+
+To verify that you have set up your basic policies effectively, 
+ test whether your Security policy rules are being evaluated and determine
+ which Security policy rule applies to a traffic flow.
+ 
+For example, to verify the policy rule that will be applied for 
+a client in the user zone with the IP address 10.35.14.150 
+when it sends a DNS query to the DNS server in the data center:
+
+Select DeviceTroubleshooting a
+nd select Security Policy Match (Select Test).
+
+Enter the Source and Destination IP addresses.
+
+Enter the Protocol.
+
+Select dns (Application)
+
+Execute the Security policy match test.
